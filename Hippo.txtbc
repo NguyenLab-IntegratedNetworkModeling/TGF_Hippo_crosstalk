@@ -1,0 +1,137 @@
+********** MODEL NAME
+Hippo-YAP model
+********** MODEL NOTES
+
+
+
+
+********** MODEL STATE INFORMATION
+Receptor2(0) = 13.9 
+TGFbetaR2(0) = 0 
+Smad7(0) = 0 
+cytoITCH(0) = 290 
+pmITCH(0) = 0 
+cytoRassf1a(0) = 10
+pmRassf1a(0) = 0
+p73(0) = 20
+YAP(0) = 178
+p73YAP(0) = 0 
+p73YAP357(0) = 0 
+RSmad2(0) = 107
+pRSmad2(0) = 0 
+pSmadYAP(0) = 0
+YAP357(0) = 0 
+cAbl(0) = 1
+pcAbl(0) = 0
+
+
+********** MODEL PARAMETERS
+
+
+kf1 = 0.1
+kf2 = 0.00143 
+kr2 = 0.00143 
+kf3 = 0.00143
+km3 = 0.0001
+kr3 = 0.0001
+kf4 = 0.0001 
+km4 = 0.0001 
+kf5 = 0.000212561 
+km5 = 0.217299 
+kr5 = 0.217299 
+kf6 = 0.0437836 
+km6 = 0.80433 
+kr6 = 0.80433 
+kf7 = 0.0462998 
+kr7 = 0.1
+kf8 = 0.133621 
+km8 = 0.133621 
+kr8 = 0.0577995 
+kf9 = 0.0577995
+km9 = 0.68163 
+kf11 = 0.01
+kr11 = 0.01
+kf12 = 0.01
+kr12 = 0.01
+km121 = 0.01
+kf13a = 0.01
+kf13b = 0.01
+km131 = 0.01
+km132 = 0.01
+kr13 = 0.01
+kf14a = 0.01
+kf14b = 0.01
+kr14 = 0.01
+km141 = 0.01
+km142 = 0.01
+kc151 = 0.001
+km151 = 0.01
+km152 = 0.01
+kr15 = 0.01
+TGF0 = 1
+TGFbeta = 100 
+Timeinput1 = 5000 
+Tinfinput1 = 100 
+********** MODEL VARIABLES
+
+TGF = TGFbeta *piecewiseIQM(1,andIQM(ge(time,Timeinput1),lt(time,Timeinput1+Tinfinput1)),0)
+pSmad2r=pRSmad2 + pSmadYAP;
+RASSF1Ar = cytoRassf1a+pmRassf1a;
+p73YAPr =  p73YAP+p73YAP357 ;
+pSmad2YAPr = pSmadYAP;
+smad7r = Smad7;
+YAP357r = YAP357+p73YAP357 ;
+
+********** MODEL REACTIONS
+
+   => Receptor2 : R1
+	vf = kf1 - (kf1/13.9) * Receptor2
+
+Receptor2 => TGFbetaR2 : R2
+	vf = kf2*Receptor2*(TGF+TGF0) - kr2*TGFbetaR2
+
+RSmad2=> pRSmad2 : R3
+	vf = kf3*TGFbetaR2*RSmad2/(km3+RSmad2) - kr3*pRSmad2
+
+TGFbetaR2 => : R4
+	vf = kf4* Smad7 *TGFbetaR2/(km4+TGFbetaR2) 
+
+cAbl => pcAbl : R5
+	vf = kf5 * TGFbetaR2 *cAbl/(km5+cAbl)- kr5*pcAbl
+
+cytoITCH => pmITCH : R6
+	vf = kf6*TGFbetaR2*cytoITCH/(km6+cytoITCH) - kr6*pmITCH 
+
+   => cytoRassf1a : R7
+	vf = kf7- (kr7)*cytoRassf1a
+
+cytoRassf1a => pmRassf1a : R8
+	vf = kf8*TGFbetaR2*cytoRassf1a/(km8+cytoRassf1a) - kr8*pmRassf1a
+
+pmRassf1a =>  : R9
+	vf = kf9*(pmITCH)*pmRassf1a/(km9+pmRassf1a) 
+
+YAP + pRSmad2 => pSmadYAP : R11
+	vf = kf11*YAP*pRSmad2 - kr11*pSmadYAP  
+
+YAP => YAP357: R12
+	vf = kf12*pcAbl*YAP/(km121+YAP) - kr12*YAP357
+
+p73 + YAP357 => p73YAP357 : R13
+	vf = kf13a*p73*YAP357*cytoRassf1a/(km131+cytoRassf1a)+kf13b*p73*YAP357*pmRassf1a/(km132+pmRassf1a) - kr13*p73YAP357 
+
+p73 + YAP => p73YAP : R14
+	vf = kf14a*p73*YAP*cytoRassf1a/(km141+cytoRassf1a)+kf14b*p73*YAP*pmRassf1a/(km142+pmRassf1a) - kr14*p73YAP 
+
+	     => Smad7 : R15
+	vf = kc151*pSmadYAP/(km151+pSmadYAP) + 0.01*kc151*pRSmad2/(km152+pRSmad2) - (kr15)*Smad7 
+
+
+********** MODEL FUNCTIONS
+
+
+********** MODEL EVENTS
+
+
+********** MODEL MATLAB FUNCTIONS
+
